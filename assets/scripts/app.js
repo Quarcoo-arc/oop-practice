@@ -35,9 +35,24 @@ class ProjectItem {
   connectSwitchButton() {
     const switchBtn = this.projectItemEl.querySelector("button:last-of-type");
     switchBtn.addEventListener("click", () => {
-      switchBtn.textContent === "Activate"
-        ? (switchBtn.textContent = "Finish")
-        : (switchBtn.textContent = "Activate");
+      const activeProjectsList = document.querySelector("#active-projects ul");
+      const finishedProjectsList = document.querySelector(
+        "#finished-projects ul"
+      );
+
+      const moveToActive = () => {
+        const projectItem = switchBtn.parentElement;
+        activeProjectsList.append(projectItem);
+        switchBtn.textContent = "Finish";
+      };
+
+      const moveToFinished = () => {
+        const projectItem = switchBtn.parentElement;
+        finishedProjectsList.append(projectItem);
+        switchBtn.textContent = "Activate";
+      };
+
+      switchBtn.textContent === "Activate" ? moveToActive() : moveToFinished();
     });
   }
 }
