@@ -5,12 +5,31 @@ class ProjectItem {
     this.id = id;
     this.projectItemEl = document.getElementById(this.id);
     this.connectSwitchButton();
+    this.connectMoreInfoButton();
   }
 
   connectMoreInfoButton() {
     const moreInfoBtn = this.projectItemEl.querySelector(
       "button:first-of-type"
     );
+    moreInfoBtn.addEventListener("click", () => {
+      const showLessInfo = () => {
+        const moreInfoEl = this.projectItemEl.querySelector("p p");
+        // console.log(moreInfoEl);
+        moreInfoEl.remove();
+        moreInfoBtn.textContent = "More Info";
+      };
+
+      const showMoreInfo = () => {
+        const moreInfo = this.projectItemEl.dataset.extraInfo;
+        const moreInfoEl = document.createElement("p");
+        moreInfoEl.textContent = moreInfo;
+        this.projectItemEl.querySelector("p").append(moreInfoEl);
+        moreInfoBtn.textContent = "Less Info";
+      };
+
+      moreInfoBtn.textContent === "More Info" ? showMoreInfo() : showLessInfo();
+    });
   }
 
   connectSwitchButton() {
