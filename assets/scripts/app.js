@@ -18,15 +18,16 @@ class Tooltip {
     const info = this.element.dataset.extraInfo;
     const moreInfoEl = document.createElement("p");
     moreInfoEl.innerText = info;
-    this.element.querySelector("p").append(moreInfoEl);
-    // console.log(this.element);
+    this.element
+      .querySelector("p")
+      .insertAdjacentElement("afterend", moreInfoEl);
 
     const moreInfoBtn = this.element.querySelector("button:first-of-type");
     moreInfoBtn.innerText = "Less Info";
   }
 
   hide(element) {
-    const moreInfoEl = element.querySelector("p p");
+    const moreInfoEl = element.querySelector("p:last-of-type");
     moreInfoEl.remove();
     const moreInfoBtn = element.querySelector("button:first-of-type");
     moreInfoBtn.innerText = "More Info";
@@ -52,24 +53,6 @@ class ProjectItem {
     moreInfoBtn.innerText === "More Info"
       ? toolTip.show(element)
       : toolTip.hide(element);
-
-    // this.show ? toolTip.show(element) : toolTip.hide();
-
-    // const showLessInfo = () => {
-    //   const moreInfoEl = this.projectItemEl.querySelector("p p");
-    //   moreInfoEl.remove();
-    //   moreInfoBtn.textContent = "More Info";
-    // };
-
-    // const showMoreInfo = () => {
-    //   const moreInfo = this.projectItemEl.dataset.extraInfo;
-    //   const moreInfoEl = document.createElement("p");
-    //   moreInfoEl.textContent = moreInfo;
-    //   this.projectItemEl.querySelector("p").append(moreInfoEl);
-    //   moreInfoBtn.textContent = "Less Info";
-    // };
-
-    // moreInfoBtn.textContent === "More Info" ? showMoreInfo() : showLessInfo();
   }
 
   connectMoreInfoButton() {
@@ -96,27 +79,6 @@ class ProjectItem {
     this.updateProjectLists = updateProjectListsFunc;
     this.connectSwitchButton(type);
   }
-
-  // changeProjectList() {
-  //   const activeProjectsList = document.querySelector("#active-projects ul");
-  //   const finishedProjectsList = document.querySelector(
-  //     "#finished-projects ul"
-  //   );
-
-  //   const moveToActive = () => {
-  //     const projectItem = switchBtn.parentElement;
-  //     activeProjectsList.append(projectItem);
-  //     switchBtn.textContent = "Finish";
-  //   };
-
-  //   const moveToFinished = () => {
-  //     const projectItem = switchBtn.parentElement;
-  //     finishedProjectsList.append(projectItem);
-  //     switchBtn.textContent = "Activate";
-  //   };
-
-  //   switchBtn.textContent === "Activate" ? moveToActive() : moveToFinished();
-  // }
 }
 
 class ProjectList {
