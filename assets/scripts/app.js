@@ -1,12 +1,27 @@
+class DOMNavigator {
+  static clearEventListeners(element) {
+    const clonedEl = element.cloneNode(true);
+    element.replaceWith(clonedEl);
+    return clonedEl;
+  }
+
+  static moveElement(elementId, destinationSelector) {
+    const element = document.getElementById(elementId);
+    const destinationEl = document.querySelector(destinationSelector);
+    destinationEl.append(element);
+  }
+}
+
 class Tooltip {}
 
 class ProjectItem {
-  constructor(id, updateProjectLists) {
+  constructor(id, updateProjectLists, type) {
+    this.type = type;
     this.id = id;
     this.updateProjectLists = updateProjectLists;
     this.projectItemEl = document.getElementById(this.id);
     this.connectMoreInfoButton();
-    this.connectSwitchButton();
+    this.connectSwitchButton(this.type);
   }
 
   connectMoreInfoButton() {
@@ -32,12 +47,19 @@ class ProjectItem {
     });
   }
 
-  connectSwitchButton() {
-    const switchBtn = this.projectItemEl.querySelector("button:last-of-type");
+  connectSwitchButton(type) {
+    let switchBtn = this.projectItemEl.querySelector("button:last-of-type");
+    switchBtn = DOMNavigator.clearEventListeners(switchBtn);
+    switchBtn.textContent = type === "active" ? "Finish" : "Activate";
     switchBtn.addEventListener(
       "click",
       this.updateProjectLists.bind(null, this.id)
     );
+  }
+
+  update(updateProjectListsFunc, type) {
+    this.updateProjectLists = updateProjectListsFunc;
+    this.connectSwitchButton(type);
   }
 
   // changeProjectList() {
@@ -70,7 +92,11 @@ class ProjectList {
     const projectItems = document.querySelectorAll(`#${type}-projects li`);
     for (const projectItem of projectItems) {
       this.projects.push(
-        new ProjectItem(projectItem.id, this.switchProjectLists.bind(this))
+        new ProjectItem(
+          projectItem.id,
+          this.switchProjectLists.bind(this),
+          this.type
+        )
       );
     }
     console.log(this.projects);
@@ -83,7 +109,8 @@ class ProjectList {
 
   addtoProjectList(project) {
     this.projects.push(project);
-    console.log(this);
+    DOMNavigator.moveElement(project.id, `#${this.type}-projects ul`);
+    project.update(this.switchProjectLists.bind(this), this.type);
   }
 
   //Switches between projects, with the help of setSwitchHandler function
