@@ -12,39 +12,74 @@ class DOMNavigator {
   }
 }
 
-class Tooltip {}
+class Tooltip {
+  show(element) {
+    this.element = element;
+    const info = this.element.dataset.extraInfo;
+    const moreInfoEl = document.createElement("p");
+    moreInfoEl.innerText = info;
+    this.element.querySelector("p").append(moreInfoEl);
+    // console.log(this.element);
+
+    const moreInfoBtn = this.element.querySelector("button:first-of-type");
+    moreInfoBtn.innerText = "Less Info";
+  }
+
+  hide(element) {
+    const moreInfoEl = element.querySelector("p p");
+    moreInfoEl.remove();
+    const moreInfoBtn = element.querySelector("button:first-of-type");
+    moreInfoBtn.innerText = "More Info";
+  }
+}
 
 class ProjectItem {
   constructor(id, updateProjectLists, type) {
     this.type = type;
     this.id = id;
+    this.show = true;
     this.updateProjectLists = updateProjectLists;
     this.projectItemEl = document.getElementById(this.id);
     this.connectMoreInfoButton();
     this.connectSwitchButton(this.type);
   }
 
+  showMoreInfoHandler(element) {
+    const toolTip = new Tooltip();
+
+    const moreInfoBtn = element.querySelector("button:first-of-type");
+
+    moreInfoBtn.innerText === "More Info"
+      ? toolTip.show(element)
+      : toolTip.hide(element);
+
+    // this.show ? toolTip.show(element) : toolTip.hide();
+
+    // const showLessInfo = () => {
+    //   const moreInfoEl = this.projectItemEl.querySelector("p p");
+    //   moreInfoEl.remove();
+    //   moreInfoBtn.textContent = "More Info";
+    // };
+
+    // const showMoreInfo = () => {
+    //   const moreInfo = this.projectItemEl.dataset.extraInfo;
+    //   const moreInfoEl = document.createElement("p");
+    //   moreInfoEl.textContent = moreInfo;
+    //   this.projectItemEl.querySelector("p").append(moreInfoEl);
+    //   moreInfoBtn.textContent = "Less Info";
+    // };
+
+    // moreInfoBtn.textContent === "More Info" ? showMoreInfo() : showLessInfo();
+  }
+
   connectMoreInfoButton() {
     const moreInfoBtn = this.projectItemEl.querySelector(
       "button:first-of-type"
     );
-    moreInfoBtn.addEventListener("click", () => {
-      const showLessInfo = () => {
-        const moreInfoEl = this.projectItemEl.querySelector("p p");
-        moreInfoEl.remove();
-        moreInfoBtn.textContent = "More Info";
-      };
-
-      const showMoreInfo = () => {
-        const moreInfo = this.projectItemEl.dataset.extraInfo;
-        const moreInfoEl = document.createElement("p");
-        moreInfoEl.textContent = moreInfo;
-        this.projectItemEl.querySelector("p").append(moreInfoEl);
-        moreInfoBtn.textContent = "Less Info";
-      };
-
-      moreInfoBtn.textContent === "More Info" ? showMoreInfo() : showLessInfo();
-    });
+    moreInfoBtn.addEventListener(
+      "click",
+      this.showMoreInfoHandler.bind(null, this.projectItemEl)
+    );
   }
 
   connectSwitchButton(type) {
