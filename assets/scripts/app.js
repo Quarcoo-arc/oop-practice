@@ -45,6 +45,7 @@ class ProjectItem {
     this.projectItemEl = document.getElementById(this.id);
     this.connectMoreInfoButton();
     this.connectSwitchButton(this.type);
+    this.connectDrag.call(this);
   }
 
   showMoreInfoHandler(element) {
@@ -55,6 +56,15 @@ class ProjectItem {
     moreInfoBtn.innerText === "More Info"
       ? toolTip.show(element)
       : toolTip.hide(element);
+  }
+
+  //drag function
+  connectDrag() {
+    this.projectItemEl.addEventListener("dragstart", (event) => {
+      event.dataTransfer.setData("text/plain", this.id);
+      event.dataTransfer.effectAllowed = "move";
+      console.log("dragging");
+    });
   }
 
   connectMoreInfoButton() {
@@ -99,6 +109,43 @@ class ProjectList {
       );
     }
     console.log(this.projects);
+
+    this.connectDroppable();
+  }
+
+  connectDroppable() {
+    const list = document.querySelector(`#${this.type}-projects ul`);
+
+    list.addEventListener("dragenter", (event) => {
+      if (event.dataTransfer.types[0] === "text/plain") {
+        list.parentElement.classList.add("droppable");
+        event.preventDefault();
+      }
+    });
+
+    list.addEventListener("dragover", (event) => {
+      if (event.dataTransfer.types[0] === "text/plain") {
+        event.preventDefault();
+      }
+    });
+
+    list.addEventListener("dragleave", (event) => {
+      if (event.relatedTarget.closest(`#${this.type}-projects ul`) !== list) {
+        list.parentElement.classList.remove("droppable");
+      }
+    });
+
+    list.addEventListener("drop", (event) => {
+      const projectId = event.dataTransfer.getData("text/plain");
+      if (this.projects.find((p) => p.id === projectId)) {
+        return;
+      }
+      document
+        .getElementById(projectId)
+        .querySelector("button:last-of-type")
+        .click();
+      list.parentElement.classList.remove("droppable");
+    });
   }
 
   //Sets switchHandler Function
