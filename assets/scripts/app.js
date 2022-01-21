@@ -9,6 +9,8 @@ class DOMNavigator {
     const element = document.getElementById(elementId);
     const destinationEl = document.querySelector(destinationSelector);
     destinationEl.append(element);
+    //Scroll to view last element added
+    element.scrollIntoView({ behavior: "smooth" });
   }
 }
 
